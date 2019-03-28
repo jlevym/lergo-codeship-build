@@ -1,1 +1,1 @@
-Implemented CHANGE_NOTES.txt to trigger builds on Codeship
+set 'CURRENT_BUILD_NUMBER' to 7 after testing 'promote build number'
