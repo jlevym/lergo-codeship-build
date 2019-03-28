@@ -18,7 +18,6 @@ echo finding current build number and indexing by 1
 BUILD_ID_URL="https://s3-eu-west-1.amazonaws.com/lergopro-backups/artifacts/latest/build.id"
 CURRENT_BUILD_ID=`wget --no-cache --no-check-certificate -O - $BUILD_ID_URL`
 
-CURRENT_BUILD_ID=7
 
 echo check if build number,  $CURRENT_BUILD_ID  is an integer
 if [[ ! "$CURRENT_BUILD_ID" =~ ^[0-9]+$ ]]; then 
