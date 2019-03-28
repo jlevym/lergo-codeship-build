@@ -12,19 +12,30 @@ echo 'build lergo-ui'
 npm install -g grunt-cli
 grunt
 
+echo get the next build number from build-tracker
+aws s3 cp s3://lergopro-backups/artifacts/build-number-tracker/build-tracker.txt build-tracker.txt
+CURRENT_BUILD_ID=`cat build-tracker.txt`
+
+
 hash='#';
 
-echo finding current build number and indexing by 1
-BUILD_ID_URL="https://s3-eu-west-1.amazonaws.com/lergopro-backups/artifacts/latest/build.id"
-CURRENT_BUILD_ID=`wget --no-cache --no-check-certificate -O - $BUILD_ID_URL`
+# echo finding current build number and indexing by 1
+# BUILD_ID_URL="https://s3-eu-west-1.amazonaws.com/lergopro-backups/artifacts/latest/build.id"
+# CURRENT_BUILD_ID=`wget --no-cache --no-check-certificate -O - $BUILD_ID_URL`
 
 
 echo check if build number,  $CURRENT_BUILD_ID  is an integer
 if [[ ! "$CURRENT_BUILD_ID" =~ ^[0-9]+$ ]]; then 
   exit 1
 fi
+
 export BUILD_NUMBER=$((CURRENT_BUILD_ID + 1))
-echo previous build id is $CURRENT_BUILD_ID and current build id is now $BUILD_NUMBER
+echo $BUILD_NUMBER > build-tracker.txt
+
+echo upload indexed build number to s3
+aws s3 cp build-tracker.txt s3://lergopro-backups/artifacts/build-number-tracker/build-tracker.txt
+
+echo previous build number was $CURRENT_BUILD_ID and current build id is now $BUILD_NUMBER
 
 export BUILD_ID=${CI_STRING_TIME:-local-build-id};
 export BUILD_DISPLAY_NAME=$hash${CI_COMMIT_ID:-local-build-id};
